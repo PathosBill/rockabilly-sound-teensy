@@ -135,17 +135,4 @@ void loop() {
   Serial.print("\n");
   mixer2.gain(1 , mappedGain); // control mixer gain with knob
 
-
-  
-  
-  
-  /*
-  int knob = analogRead(A3);  // knob = 0 to 1023
-  float gain1 = (float)knob / 1023.0;
-  float gain2 = 1.0 - gain1;
-  mixer1.gain(0, gain1);
-  mixer1.gain(1, gain2);
-  mixer2.gain(0, gain1);
-  mixer2.gain(1, gain2);
-  */
 }
