@@ -1,13 +1,16 @@
-// Advanced Microcontroller-based Audio Workshop
-//
-// http://www.pjrc.com/store/audio_tutorial_kit.html
-// https://hackaday.io/project/8292-microcontroller-audio-workshop-had-supercon-2015
+// "That Rockabilly Sound" II- rewritten for Teensy
 // 
-// Part 2-2: Mixers & Playing Multiple Sounds
 
+
+/* To-Do 
+ *  add physical controls
+ *  convert to raw read
+ *  sound design delay
+ *  verify sync
+ */
 
 ///////////////////////////////////
-// copy the Design Tool code here
+// code from Teensy Audio design tool
 ///////////////////////////////////
 
 #include <Audio.h>
@@ -37,15 +40,14 @@ AudioConnection          patchCord9(mixer2, 0, pt8211_1, 1);
 // GUItool: end automatically generated code
 
 
-
-
-
+// define SD card
 
 // Use these with the Teensy 3.5 & 3.6 SD card
 #define SDCARD_CS_PIN    BUILTIN_SDCARD
 #define SDCARD_MOSI_PIN  11  // not actually used
 #define SDCARD_SCK_PIN   13  // not actually used
 
+// Init Stuff
 void setup() {
   Serial.begin(9600);
   AudioMemory(8);
@@ -57,6 +59,8 @@ void setup() {
       delay(500);
     }
   }
+
+  // initialize settings
   pinMode(13, OUTPUT); // LED on pin 13
   mixer1.gain(0, 0.25);
   mixer1.gain(1, 0.25);
@@ -67,6 +71,7 @@ void setup() {
   delay(1000);
 }
 
+// PLAYBACK 
 void loop() {
   if (playSdWav1.isPlaying() == false) {
     Serial.println("Start playing 1");
@@ -89,7 +94,51 @@ void loop() {
     delay(10); // wait for library to parse WAV info
   }
   
-  // uncomment this code to allow Knob A3 to pan between songs
+  // CONTROL
+  int knobA = analogRead(A10); // knob read @ 10 bits 0 to 1023
+  float rawGain = ( (float)knobA / 1023.0);
+  float mappedGain = rawGain * 0.25;
+  Serial.print( "knob 1 = "); // log to serial monitor
+  Serial.print(mappedGain);
+  Serial.print("\n");
+  mixer1.gain(0, mappedGain); // control mixer gain with knob
+
+  int knobB = analogRead(A11); // knob read @ 10 bits 0 to 1023
+  rawGain = ( (float)knobB / 1023.0);
+  mappedGain = rawGain * 0.25;
+  Serial.print( "knob 2 = "); // log to serial monitor
+  Serial.print(mappedGain);
+  Serial.print("\n");
+  mixer1.gain(1, mappedGain); // control mixer gain with knob
+
+  int knobC = analogRead(A12); // knob read @ 10 bits 0 to 1023
+  rawGain = ( (float)knobC / 1023.0);
+  mappedGain = rawGain * 0.25;
+  Serial.print( "knob 3 = "); // log to serial monitor
+  Serial.print(mappedGain);
+  Serial.print("\n");
+  mixer1.gain(2 , mappedGain); // control mixer gain with knob
+
+  int knobD = analogRead(A13); // knob read @ 10 bits 0 to 1023
+  rawGain = ( (float)knobD / 1023.0);
+  mappedGain = rawGain * 0.25;
+  Serial.print( "knob 4 = "); // log to serial monitor
+  Serial.print(mappedGain);
+  Serial.print("\n");
+  mixer1.gain(3 , mappedGain); // control mixer gain with knob
+
+  int knobE = analogRead(A14); // knob read @ 10 bits 0 to 1023
+  rawGain = ( (float)knobE / 1023.0);
+  mappedGain = rawGain * 0.5;
+  Serial.print( "knob 5 = "); // log to serial monitor
+  Serial.print(mappedGain);
+  Serial.print("\n");
+  mixer2.gain(1 , mappedGain); // control mixer gain with knob
+
+
+  
+  
+  
   /*
   int knob = analogRead(A3);  // knob = 0 to 1023
   float gain1 = (float)knob / 1023.0;
